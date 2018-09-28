@@ -212,7 +212,7 @@ function findNamedEntityTreeBranch(nodeIx, cp) {
 
 //Tokenizer
 class Tokenizer {
-    constructor() {
+    constructor(options) {
         this.preprocessor = new Preprocessor();
 
         this.tokenQueue = [];
@@ -1204,7 +1204,11 @@ class Tokenizer {
         } else if (cp === $.EQUALS_SIGN) {
             this._leaveAttrName(BEFORE_ATTRIBUTE_VALUE_STATE);
         } else if (isAsciiUpper(cp)) {
-            this.currentAttr.name += toAsciiLowerChar(cp);
+            if (options.keepAttrCase) {
+                this.currentAttr.name += toChar(cp);
+            } else {
+                this.currentAttr.name += toAsciiLowerChar(cp);
+            }
         } else if (cp === $.QUOTATION_MARK || cp === $.APOSTROPHE || cp === $.LESS_THAN_SIGN) {
             this._err(ERR.unexpectedCharacterInAttributeName);
             this.currentAttr.name += toChar(cp);
